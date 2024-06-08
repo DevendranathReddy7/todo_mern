@@ -1,6 +1,28 @@
 {
   "dependencies": {
     "body-parser": "^1.20.2",
-    "express": "^4.19.2"
-  }
+    "concurrently": "^8.2.2",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.3"
+  },
+  "name": "todo_mern",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevendranathReddy7/todo_mern.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DevendranathReddy7/todo_mern/issues"
+  },
+  "homepage": "https://github.com/DevendranathReddy7/todo_mern#readme",
+  "description": ""
 }
