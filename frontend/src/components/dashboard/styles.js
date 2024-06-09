@@ -37,7 +37,7 @@ export const Overlay = styled.div`
 
 export const ModalDiv = styled.div`
   position: fixed;
-  top: 30%;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   background-color: #5f9ea0;
@@ -68,6 +68,7 @@ export const PriorityDiv = styled.div`
   display: flex;
   flex-direction: column;
   margin: 10px;
+  float: right;
 `;
 
 export const Button = styled.button`
@@ -80,6 +81,36 @@ export const Button = styled.button`
   float: right;
 `;
 
+export const UlStatus = styled.ul`
+  list-style-type: none;
+  background-color: #3a7ca5;
+  width: 100px;
+  padding: 10px;
+  border-radius: 3px;
+`;
+export const CheckboxDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  float: right;
+  margin-right: 5px;
+  position: fixed;
+  top: 8rem;
+  right: 5px;
+  background-color: ${(props) =>
+    props.theme === "light" ? "#5f9ea0" : "white"};
+  color: ${(props) => (props.theme === "light" ? "white" : "black")};
+  padding: 10px;
+  border-radius: 3px;
+  @media (max-width: 270px) {
+    top: 12rem;
+  }
+`;
+
+export const Checkbox = styled.input`
+  height: 1.3rem;
+  width: 30px;
+`;
 /////////////////////////////////-----ToDo styles----///////////////////////////////
 
 export const TodoWrapper = styled.div`
@@ -89,14 +120,17 @@ export const TodoWrapper = styled.div`
 `;
 
 export const TodoContainer = styled.div`
-  width: 17rem;
+  width: 22rem;
   height: 8rem;
   border: ${(props) =>
     props.theme === "light" ? "1px solid black" : "1px solid white"};
 
   border-radius: 5px;
   padding: 0px 10px;
-  margin: 0px 0px 10px 20px;
+  margin: 0px 0px 10px 30px;
+  @media (max-width: 480px) {
+    width: 17rem;
+  }
 `;
 
 export const Div1 = styled.div`
@@ -108,7 +142,8 @@ export const Div1 = styled.div`
 
 export const Div2 = styled.div`
   display: flex;
-  justify-content: space-between;
+  margin-right: 5px;
+  justify-content: space-around;
   align-items: center;
   padding-top: 2px;
   text-align: center;
@@ -125,14 +160,38 @@ export const Date = styled.div`
   font-size: 16px;
   background-color: lightgrey;
   border-radius: 30px;
-  width: ${(props) => (props.status ? "3rem" : "7rem")};
+  width: 7rem;
   ${(props) =>
     props.status &&
     `
     background-color: ${
       props.status === "Todo"
         ? "lightcoral"
-        : props.status === "inProgress"
+        : props.status === "Progress"
+        ? "lightblue"
+        : "lightgreen"
+    };
+  `};
+  padding: 5px;
+  height: 1.2rem;
+  border-style: none;
+`;
+
+export const Date1 = styled.div`
+  color: black;
+  font-size: 16px;
+  background-color: lightgrey;
+  border-radius: 30px;
+  width: ${(props) => (props.status ? "5rem" : "7rem")};
+
+  margin-bottom: ${(props) => !props.fromTodo && "5px"};
+  ${(props) =>
+    props.status &&
+    `
+    background-color: ${
+      props.status === "Todo"
+        ? "lightcoral"
+        : props.status === "Progress"
         ? "lightblue"
         : "lightgreen"
     };
