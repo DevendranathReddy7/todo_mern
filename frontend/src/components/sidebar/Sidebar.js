@@ -12,7 +12,7 @@ import {
 import { CiLight, CiDark } from "react-icons/ci";
 import { LuArrowDownRightSquare } from "react-icons/lu";
 
-const Sidebar = ({ SidebarStatus, mode }) => {
+const Sidebar = ({ SidebarStatus, mode, todos }) => {
   const [theme, setTheme] = useState("light");
   const [showSideBar, setShowSideBar] = useState(true);
 
@@ -24,6 +24,10 @@ const Sidebar = ({ SidebarStatus, mode }) => {
     mode(theme);
   }, [theme]);
 
+  const inTodo = todos.filter((todo) => todo.status === "Todo");
+  const inProgress = todos.filter((todo) => todo.status === "Progress");
+  const completed = todos.filter((todo) => todo.status === "Completed");
+
   return (
     <>
       {showSideBar ? (
@@ -34,10 +38,10 @@ const Sidebar = ({ SidebarStatus, mode }) => {
           </HeaderWrapper>
           <TaskItemsWrapper active={theme === "light"}>
             <Ul>
-              <Li>All Tasks (0)</Li>
-              <Li>To do (0)</Li>
-              <Li>In Progress (0)</Li>
-              <Li>Completed (0)</Li>
+              <Li>All Tasks ({todos.length || 0})</Li>
+              <Li>To do ({inTodo.length || 0})</Li>
+              <Li>In Progress ({inProgress.length || 0})</Li>
+              <Li>Completed ({completed.length || 0})</Li>
             </Ul>
           </TaskItemsWrapper>
           <ThemeWrapper>

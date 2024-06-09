@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const SidebarWrapper = styled.div`
-  height: 100vh;
+  min-height: 100vh;
+  max-height: auto;
   padding-left: 10px;
   width: 25rem;
   background-color: ${(props) => (props.active ? "white" : "black")};

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const DashboardWrapper = styled.div`
+  min-height: 100vh;
+  max-height: auto;
   width: ${(props) => (props.sideBar ? "80rem" : "100%")};
   background-color: ${(props) => (props.theme === "light" ? "white" : "black")};
   color: ${(props) => (props.theme === "light" ? "black" : "white")};
@@ -21,6 +23,7 @@ export const Div = styled.div`
 export const Span = styled.span`
   margin-right: 20px;
   padding-bottom: 15px;
+  color: ${(props) => (props.active ? "#3a7ca5" : "")};
 `;
 
 export const Overlay = styled.div`
@@ -75,4 +78,66 @@ export const Button = styled.button`
   background-color: ${(props) => (props.add ? "#3a7ca5" : "transparent")};
   margin: 4px;
   float: right;
+`;
+
+/////////////////////////////////-----ToDo styles----///////////////////////////////
+
+export const TodoWrapper = styled.div`
+  margin-left: 3px;
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const TodoContainer = styled.div`
+  width: 17rem;
+  height: 8rem;
+  border: ${(props) =>
+    props.theme === "light" ? "1px solid black" : "1px solid white"};
+
+  border-radius: 5px;
+  padding: 0px 10px;
+  margin: 0px 0px 10px 20px;
+`;
+
+export const Div1 = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 2px;
+`;
+
+export const Div2 = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2px;
+  text-align: center;
+`;
+
+export const Title = styled.p`
+  font-size: 16px;
+  font-weight: bold;
+  padding: -10px;
+`;
+
+export const Date = styled.div`
+  color: black;
+  font-size: 16px;
+  background-color: lightgrey;
+  border-radius: 30px;
+  width: ${(props) => (props.status ? "3rem" : "7rem")};
+  ${(props) =>
+    props.status &&
+    `
+    background-color: ${
+      props.status === "Todo"
+        ? "lightcoral"
+        : props.status === "inProgress"
+        ? "lightblue"
+        : "lightgreen"
+    };
+  `};
+  padding: 5px;
+  height: 1.2rem;
+  border-style: none;
 `;

@@ -6,6 +6,11 @@ import Sidebar from "./components/sidebar/Sidebar";
 function App() {
   const [sideBar, setSideBar] = useState(true);
   const [theme, setTheme] = useState("light");
+  const [todos, setTodos] = useState([]);
+
+  const totalTodos = (value) => {
+    setTodos(value);
+  };
   const sidebarHandle = (value) => {
     setSideBar(value);
   };
@@ -16,8 +21,12 @@ function App() {
 
   return (
     <div className="App" style={{ display: "flex", flexDirection: "row" }}>
-      <Sidebar SidebarStatus={sidebarHandle} mode={themeHandler} />
-      <Dashboard sideBar={sideBar} theme={theme} />
+      <Sidebar
+        SidebarStatus={sidebarHandle}
+        mode={themeHandler}
+        todos={todos}
+      />
+      <Dashboard sideBar={sideBar} theme={theme} todosCount={totalTodos} />
     </div>
   );
 }
