@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SidebarWrapper,
   ThemeWrapper,
@@ -7,13 +7,23 @@ import {
   TaskItemsWrapper,
   Ul,
   Li,
+  Div,
 } from "./styles";
 import { CiLight, CiDark } from "react-icons/ci";
 import { LuArrowDownRightSquare } from "react-icons/lu";
 
-const Sidebar = (props) => {
+const Sidebar = ({ SidebarStatus, mode }) => {
   const [theme, setTheme] = useState("light");
   const [showSideBar, setShowSideBar] = useState(true);
+
+  useEffect(() => {
+    SidebarStatus(showSideBar);
+  }, [showSideBar]);
+
+  useEffect(() => {
+    mode(theme);
+  }, [theme]);
+
   return (
     <>
       {showSideBar ? (
@@ -46,10 +56,12 @@ const Sidebar = (props) => {
           </ThemeWrapper>
         </SidebarWrapper>
       ) : (
-        <LuArrowDownRightSquare
-          size={30}
-          onClick={() => setShowSideBar(true)}
-        />
+        <Div active={theme === "light"}>
+          <LuArrowDownRightSquare
+            size={30}
+            onClick={() => setShowSideBar(true)}
+          />
+        </Div>
       )}
     </>
   );

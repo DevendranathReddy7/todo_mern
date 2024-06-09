@@ -3,9 +3,12 @@ import styled from "styled-components";
 export const SidebarWrapper = styled.div`
   height: 100vh;
   padding-left: 10px;
-  width: 20%;
+  width: 25rem;
   background-color: ${(props) => (props.active ? "white" : "black")};
-  color: ${(props) => (!props.active ? "gray" : "black")};
+  color: ${(props) => (!props.active ? "white" : "black")};
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const HeaderWrapper = styled.div`
@@ -26,18 +29,17 @@ export const Ul = styled.ul`
 
 export const Li = styled.li`
   margin-bottom: 10px;
-  font-family: consolas;
 `;
 export const ThemeWrapper = styled.div`
   position: fixed;
   bottom: 10px;
-  left: 10px;
+  left: 20px;
   background-color: #a4a4a447;
   padding: 10px;
   display: flex;
   justify-content: space-between;
   border-radius: 30px;
-  @media (max-width: 1200px) {
+  @media (max-width: 1040px) {
     flex-direction: column;
     border-radius: 10px;
     padding: 10px;
@@ -53,10 +55,15 @@ export const ButtonWrapper = styled.button`
   width: 7rem;
   height: 2rem;
   border-style: none;
-  @media (max-width: 1200px) {
+  @media (max-width: 1040px) {
     width: 8rem;
     border-radius: 10px;
     padding: 10px;
     width: 100%;
   }
+`;
+
+export const Div = styled.div`
+  background-color: ${(props) => (props.active ? "white" : "black")};
+  color: ${(props) => (!props.active ? "white" : "black")};
 `;
