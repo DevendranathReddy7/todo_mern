@@ -12,37 +12,39 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { auth } from "../../store/actions/authActions";
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [error, setError] = React.useState({ error: false, msg: "" });
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    try {
+      const response = await fetch("http://localhost:5000/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+
+      const res = await response.json();
+
+      if (response.ok) {
+        setError((prev) => ({ ...prev, error: false, msg: "" }));
+        dispatch(auth(res.user));
+        navigate("/home");
+      } else {
+        setError((prev) => ({ ...prev, error: true, msg: res.message }));
+      }
+    } catch (error) {}
   };
 
   return (
@@ -63,6 +65,11 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          {error.error && (
+            <Typography component="h1" variant="h5">
+              {error.msg}
+            </Typography>
+          )}
           <Box
             component="form"
             onSubmit={handleSubmit}

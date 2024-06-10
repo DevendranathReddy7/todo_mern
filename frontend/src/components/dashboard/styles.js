@@ -20,6 +20,18 @@ export const Div = styled.div`
   justify-content: space-between;
 `;
 
+export const Login = styled.button`
+  width: 5rem;
+  height: 2rem;
+  border-radius: 3px;
+  border-style: ${(props) => (props.add ? "none" : "black")};
+  border-style: none;
+  margin: 4px;
+  background-color: #5f9ea0;
+  font-family: serif;
+  font-size: 16px;
+`;
+
 export const Span = styled.span`
   margin-right: 20px;
   padding-bottom: 15px;

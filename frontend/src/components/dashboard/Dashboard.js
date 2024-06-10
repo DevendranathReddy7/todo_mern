@@ -12,7 +12,7 @@ import {
   Button,
   Checkbox,
   CheckboxDiv,
-  UlStatus,
+  Login,
   Date1,
 } from "./styles";
 import { RxDashboard, RxCardStackPlus } from "react-icons/rx";
@@ -25,6 +25,8 @@ import {
 
 import { LuFilterX } from "react-icons/lu";
 import Todo from "./Todo";
+import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 const getDate = () => {
   const months = [
@@ -56,6 +58,8 @@ const intialTodo = {
   date: getDate(),
 };
 const Dashboard = ({ sideBar, theme, todosCount }) => {
+  const user = useSelector((store) => store.auth);
+
   const [showModal, setShowModal] = useState(false);
   const [showPriority, setShowPriority] = useState(false);
   const [activeIcon, setActiveIcon] = useState("board view");
@@ -66,22 +70,12 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
   const [changeStatus, setChangeStatus] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("Todo");
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
   const [filter, setFilter] = useState({
     Todo: true,
     Progress: true,
     Completed: true,
   });
-
-  //const tempTodo = todos.map((todo) =>
-  //     todo.id === id
-  //   ? {
-  //       ...todo,
-  //       status: "Progress",
-  //     }
-  //   : todo
-  // );
-
-  //setTodos(tempTodo);
 
   const addItemHandler = () => {
     setActiveIcon("add item");
@@ -336,8 +330,22 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
 
   return (
     <DashboardWrapper sideBar={sideBar} theme={theme}>
-      <nav>
-        <P>Welcome back, Dev👋</P>
+      <nav
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginRight: "20px",
+        }}
+      >
+        <>
+          <P>Welcome back, {user.name.split(" ")[0] || "Guest"}👋</P>
+        </>
+        <>
+          <Login onClick={() => navigate("/signin")}>
+            {user.currentUser ? "Log-out" : "Log-in"}
+          </Login>
+        </>
       </nav>
 
       <Div>
