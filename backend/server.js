@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const authRouters = require("./routes/authenticationRoutes.js");
+const todoRouters = require("./routes/todoRoutes.js");
 const app = express();
 app.use(bodyParser.json());
 const mongoose = require("mongoose");
@@ -14,6 +15,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/", authRouters);
+
+app.use("/todo", todoRouters);
 
 mongoose
   .connect(
