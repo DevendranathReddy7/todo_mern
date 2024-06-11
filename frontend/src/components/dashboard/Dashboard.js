@@ -25,8 +25,10 @@ import {
 
 import { LuFilterX } from "react-icons/lu";
 import Todo from "./Todo";
+import { useDispatch, useSelector } from "react-redux";
+import { add, edit, Delete } from "../../store/actions/todoActions";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+//import { Fetch } from "../Utils/util";
 
 const getDate = () => {
   const months = [
@@ -59,6 +61,7 @@ const intialTodo = {
 };
 const Dashboard = ({ sideBar, theme, todosCount }) => {
   const user = useSelector((store) => store.auth);
+  const todoR = useSelector((store) => store.todo);
 
   const [showModal, setShowModal] = useState(false);
   const [showPriority, setShowPriority] = useState(false);
@@ -70,12 +73,31 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
   const [changeStatus, setChangeStatus] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("Todo");
   const [error, setError] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [filter, setFilter] = useState({
     Todo: true,
     Progress: true,
     Completed: true,
   });
+
+  //get Todos
+  useEffect(() => {
+    const getTodos = async () => {
+      const response = await fetch(
+        `http://localhost:5000/todo/${user.currentUser}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const data = await response.json();
+      setTodos(data.todos);
+      console.log(data.todos);
+    };
+    getTodos();
+  }, [user.currentUser, todoR]);
 
   const addItemHandler = () => {
     setActiveIcon("add item");
@@ -92,7 +114,6 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
     setCurrentTodo((prev) => ({
       ...prev,
       priority: priority,
-      id: Math.random().toString(36),
     }));
     setError(false);
   };
@@ -113,31 +134,7 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
     todosCount(todos);
   }, [todos]);
 
-  const editTodoHandler = () => {
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
-    const priority = document.getElementById("priority").value;
-
-    const id = currentTodo[0].id;
-    const temptodo = todos.map((todo) =>
-      todo.id === id
-        ? {
-            ...todo,
-            title: title,
-            priority: priority,
-            description: description,
-            date: getDate(),
-            status: currentStatus,
-          }
-        : todo
-    );
-    setTodos(temptodo);
-    setCurrentTodo(intialTodo);
-    setShowModal(false);
-    setIsEditing(false);
-  };
-
-  const addHandler = () => {
+  const addHandler = async () => {
     if (
       currentTodo.title === "" ||
       currentTodo.description === "" ||
@@ -145,17 +142,73 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
     ) {
       setError(true);
     } else {
+      // const response = await Fetch("add", "POST", {
+      //   ...currentTodo,
+      //   owner: user.currentUser,
+      // });
+
+      const response = await fetch("http://localhost:5000/todo/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...currentTodo, owner: user.currentUser }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        dispatch(add(currentTodo));
+      } else {
+        setError((prev) => ({ ...prev, error: true, msg: data.message }));
+      }
       setShowModal(false);
       setError(false);
       setActiveIcon("board view");
-      setTodos((prevTodos) => [...prevTodos, currentTodo]);
       setCurrentTodo(intialTodo);
     }
   };
 
-  const deleteHandler = (id) => {
-    const tempTodo = todos.filter((todo) => todo.id !== id);
-    setTodos(tempTodo);
+  const editTodoHandler = async () => {
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+    const priority = document.getElementById("priority").value;
+    console.log(title, description, priority);
+    const id = currentTodo[0].id;
+
+    setCurrentTodo(intialTodo);
+    setShowModal(false);
+    setIsEditing(false);
+
+    const response = await fetch("http://localhost:5000/todo/edit", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        priority: priority,
+        owner: user.currentUser,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      dispatch(edit(currentTodo));
+    } else {
+      setError((prev) => ({ ...prev, error: true, msg: data.message }));
+    }
+  };
+
+  const deleteHandler = async (id) => {
+    const response = await fetch("http://localhost:5000/todo/delete", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id, owner: user.currentUser }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      dispatch(Delete(id));
+    } else {
+      setError((prev) => ({ ...prev, error: true, msg: data.message }));
+    }
   };
 
   const editHandler = (id) => {

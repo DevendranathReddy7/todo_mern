@@ -2,6 +2,33 @@ const UserSchema = require("../modals/userModal");
 const TodoSchema = require("../modals/todoModal");
 const HttpError = require("../modals/http-error");
 
+const getTodos = async (req, res, next) => {
+  const owner = req.params.uId;
+  let validUser = "";
+  let todos = "";
+  try {
+    validUser = await UserSchema.findOne({ _id: owner });
+  } catch (err) {
+    const error = new HttpError("Something went wrong", 500);
+    return next(error);
+  }
+
+  try {
+    if (validUser) {
+      todos = await TodoSchema.find({ owner: owner });
+    } else {
+      res.status(401).json("You're not authorised to perform this action");
+    }
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError("Something went wrong get", 500);
+    return next(error);
+  }
+  res.json({
+    todos: todos.map((todo) => todo.toObject({ getters: true })),
+  });
+};
+
 const addTodo = async (req, res, next) => {
   const { title, description, priority, status, date, owner } = req.body;
   let validUser = "";
@@ -122,6 +149,7 @@ const deleteTodo = async (req, res, next) => {
   }
 };
 
+exports.getTodos = getTodos;
 exports.addTodo = addTodo;
 exports.editTodo = editTodo;
 exports.deleteTodo = deleteTodo;
