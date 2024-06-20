@@ -28,7 +28,7 @@ import Todo from "./Todo";
 import { useDispatch, useSelector } from "react-redux";
 import { add, edit, Delete } from "../../store/actions/todoActions";
 import { useNavigate } from "react-router";
-//import { Fetch } from "../Utils/util";
+import Navbar from "./Navbar";
 
 const getDate = () => {
   const months = [
@@ -59,10 +59,9 @@ const intialTodo = {
   status: "Todo",
   date: getDate(),
 };
-const Dashboard = ({ sideBar, theme, todosCount }) => {
+const Dashboard = ({ sideBar, theme }) => {
   const user = useSelector((store) => store.auth);
-  const todoR = useSelector((store) => store.todo);
-
+  const todosStore = useSelector((store) => store.todo);
   const [showModal, setShowModal] = useState(false);
   const [showPriority, setShowPriority] = useState(false);
   const [activeIcon, setActiveIcon] = useState("board view");
@@ -73,6 +72,7 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
   const [changeStatus, setChangeStatus] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("Todo");
   const [error, setError] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [filter, setFilter] = useState({
@@ -94,13 +94,13 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
 
       const data = await response.json();
       setTodos(data.todos);
-      console.log(data.todos);
     };
     getTodos();
-  }, [user.currentUser, todoR]);
+  }, [user.currentUser, todosStore]);
 
   const addItemHandler = () => {
     setActiveIcon("add item");
+    setIsFilterClicked(false);
     setShowModal(true);
   };
 
@@ -117,6 +117,7 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
     }));
     setError(false);
   };
+
   const filterHandler = () => {
     setActiveIcon("filter");
     setIsFilterClicked((prev) => !prev);
@@ -130,10 +131,6 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
     setError(false);
   };
 
-  useEffect(() => {
-    todosCount(todos);
-  }, [todos]);
-
   const addHandler = async () => {
     if (
       currentTodo.title === "" ||
@@ -142,11 +139,6 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
     ) {
       setError(true);
     } else {
-      // const response = await Fetch("add", "POST", {
-      //   ...currentTodo,
-      //   owner: user.currentUser,
-      // });
-
       const response = await fetch("http://localhost:5000/todo/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -154,8 +146,9 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
       });
 
       const data = await response.json();
+      console.log(data);
       if (response.ok) {
-        dispatch(add(currentTodo));
+        dispatch(add(data));
       } else {
         setError((prev) => ({ ...prev, error: true, msg: data.message }));
       }
@@ -164,58 +157,6 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
       setActiveIcon("board view");
       setCurrentTodo(intialTodo);
     }
-  };
-
-  const editTodoHandler = async () => {
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
-    const priority = document.getElementById("priority").value;
-    console.log(title, description, priority);
-    const id = currentTodo[0].id;
-
-    setCurrentTodo(intialTodo);
-    setShowModal(false);
-    setIsEditing(false);
-
-    const response = await fetch("http://localhost:5000/todo/edit", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: title,
-        description: description,
-        priority: priority,
-        owner: user.currentUser,
-      }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      dispatch(edit(currentTodo));
-    } else {
-      setError((prev) => ({ ...prev, error: true, msg: data.message }));
-    }
-  };
-
-  const deleteHandler = async (id) => {
-    const response = await fetch("http://localhost:5000/todo/delete", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id, owner: user.currentUser }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      dispatch(Delete(id));
-    } else {
-      setError((prev) => ({ ...prev, error: true, msg: data.message }));
-    }
-  };
-
-  const editHandler = (id) => {
-    const tempTodo = todos.filter((todo) => todo.id === id);
-    setCurrentTodo(tempTodo);
-    setIsEditing(true);
-    setShowModal(true);
   };
 
   useEffect(() => {
@@ -307,7 +248,7 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
           )}
           <div>
             {isEditing ? (
-              <Button onClick={editTodoHandler} add>
+              <Button onClick={"editTodoHandler"} add>
                 Save
               </Button>
             ) : (
@@ -383,45 +324,17 @@ const Dashboard = ({ sideBar, theme, todosCount }) => {
 
   return (
     <DashboardWrapper sideBar={sideBar} theme={theme}>
-      <nav
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginRight: "20px",
-        }}
-      >
-        <>
-          <P>Welcome back, {user.name.split(" ")[0] || "Guest"}👋</P>
-        </>
-        <>
-          <Login onClick={() => navigate("/signin")}>
-            {user.currentUser ? "Log-out" : "Log-in"}
-          </Login>
-        </>
-      </nav>
+      <Navbar
+        activeIcon={activeIcon}
+        addItemHandler={addItemHandler}
+        filterHandler={filterHandler}
+      />
 
-      <Div>
-        <div>
-          <Span active={activeIcon === "board view"}>
-            <RxDashboard /> Board View
-          </Span>
-          <Span onClick={addItemHandler} active={activeIcon === "add item"}>
-            <RxCardStackPlus /> Add Item
-          </Span>
-        </div>
-        <div>
-          <Span onClick={filterHandler} active={activeIcon === "filter"}>
-            <LuFilterX /> Filter
-          </Span>
-        </div>
-      </Div>
-      <hr />
       <Todo
         todos={todos}
         theme={theme}
-        deleteTodo={deleteHandler}
-        editTodo={editHandler}
+        // deleteTodo={deleteHandler}
+        // editTodo={editHandler}
         filter={filter}
       />
       {changeStatus && displayStatus()}

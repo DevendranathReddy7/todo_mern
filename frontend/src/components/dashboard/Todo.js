@@ -10,22 +10,76 @@ import {
   FcMediumPriority,
   FcLowPriority,
 } from "react-icons/fc";
+import { useDispatch, useSelector } from "react-redux";
+import { Delete, edit } from "../../store/actions/todoActions";
 
-const Todo = ({ todos, theme, deleteTodo, editTodo, filter }) => {
-  const deleteHandler = (id) => {
-    deleteTodo(id);
+const Todo = ({ theme, filter }) => {
+  const dispatch = useDispatch();
+  const todos = useSelector((store) => store.todo);
+  const user = useSelector((store) => store.auth);
+  console.log(todos);
+  // const editTodoHandler = async () => {
+  //   const title = document.getElementById("title").value;
+  //   const description = document.getElementById("description").value;
+  //   const priority = document.getElementById("priority").value;
+
+  //   const response = await fetch("http://localhost:5000/todo/edit", {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       title: title,
+  //       description: description,
+  //       priority: priority,
+  //       status: currentStatus,
+  //       owner: user.currentUser,
+  //     }),
+  //   });
+
+  //   const data = await response.json();
+  //   if (response.ok) {
+  //     dispatch(edit(currentTodo));
+  //   } else {
+  //     setError((prev) => ({ ...prev, error: true, msg: data.message }));
+  //   }
+
+  //   setCurrentTodo(intialTodo);
+  //   setShowModal(false);
+  //   setIsEditing(false);
+  // };
+
+  // const editHandler = (id) => {
+  //   const tempTodo = todos.filter((todo) => todo.id === id);
+  //   setCurrentTodo(tempTodo);
+  //   setIsEditing(true);
+  //   setShowModal(true);
+  // };
+
+  const deleteHandler = async (id) => {
+    const response = await fetch("http://localhost:5000/todo/delete", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id, owner: user.currentUser }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      dispatch(Delete(id));
+    } else {
+      //setError((prev) => ({ ...prev, error: true, msg: data.message }));
+    }
   };
 
-  const editHandler = (id) => {
-    editTodo(id);
+  const getDate = (date) => {
+    let dateStr = date.split("T")[0];
+    let [year, month, day] = dateStr.split("-");
+    return `${day}-${month}-${year}`;
   };
-
   return (
     <TodoWrapper>
-      {todos.map(
+      {todos?.map(
         (todo) =>
           filter[todo?.status] && (
-            <TodoContainer theme={theme}>
+            <TodoContainer theme={theme} key={todo._id}>
               <Div1>
                 <div>
                   <Title>
@@ -43,18 +97,19 @@ const Todo = ({ todos, theme, deleteTodo, editTodo, filter }) => {
                 <div>
                   <div
                     style={{ paddingTop: "15px" }}
-                    onClick={() => editHandler(todo.id)}
+                    // onClick={() => editHandler(todo._id)}
                   >
                     <RiEditCircleLine size={23} />
                   </div>
-                  <div onClick={() => deleteHandler(todo.id)}>
+                  <div onClick={() => deleteHandler(todo._id)}>
                     <TiDeleteOutline size={25} />
                   </div>
                 </div>
               </Div1>
               <Div2>
                 <Date>
-                  <SlCalender /> {todo.date}
+                  <SlCalender />
+                  {getDate(todo.date)}
                 </Date>
 
                 <div>

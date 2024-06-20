@@ -12,7 +12,11 @@ import {
 import { CiLight, CiDark } from "react-icons/ci";
 import { LuArrowDownRightSquare } from "react-icons/lu";
 
-const Sidebar = ({ SidebarStatus, mode, todos }) => {
+import { useSelector } from "react-redux";
+
+const Sidebar = ({ SidebarStatus, mode }) => {
+  const todos = useSelector((store) => store.todo);
+
   const [theme, setTheme] = useState("light");
   const [showSideBar, setShowSideBar] = useState(true);
 
@@ -24,9 +28,9 @@ const Sidebar = ({ SidebarStatus, mode, todos }) => {
     mode(theme);
   }, [theme]);
 
-  const inTodo = todos.filter((todo) => todo.status === "Todo");
-  const inProgress = todos.filter((todo) => todo.status === "Progress");
-  const completed = todos.filter((todo) => todo.status === "Completed");
+  const inTodo = todos?.filter((todo) => todo.status === "Todo");
+  const inProgress = todos?.filter((todo) => todo.status === "Progress");
+  const completed = todos?.filter((todo) => todo.status === "Completed");
 
   return (
     <>

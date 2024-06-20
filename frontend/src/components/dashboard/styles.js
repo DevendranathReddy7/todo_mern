@@ -195,7 +195,7 @@ export const Date1 = styled.div`
   background-color: lightgrey;
   border-radius: 30px;
   width: ${(props) => (props.status ? "5rem" : "7rem")};
-
+  text-align: center;
   margin-bottom: ${(props) => !props.fromTodo && "5px"};
   ${(props) =>
     props.status &&

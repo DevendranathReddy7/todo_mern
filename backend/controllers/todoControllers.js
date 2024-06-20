@@ -145,7 +145,7 @@ const deleteTodo = async (req, res, next) => {
       res.status(401).json("You're not authorised to perform this action");
     }
   } catch (err) {
-    res.send(error);
+    res.send(err);
   }
 };
 
