@@ -4,6 +4,7 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { RiEditCircleLine } from "react-icons/ri";
 
 import { SlCalender } from "react-icons/sl";
+import { toast } from "react-toastify";
 
 import {
   FcHighPriority,
@@ -43,8 +44,16 @@ const Todo = ({
     const data = await response.json();
     if (response.ok) {
       todosChanged();
+      toast.success("Todo has been successfully deleted!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
       //dispatch(Delete(id));
     } else {
+      toast.error("Failed to delete Todo, please try again!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
       //setError((prev) => ({ ...prev, error: true, msg: data.message }));
     }
   };

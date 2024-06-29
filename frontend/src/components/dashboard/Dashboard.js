@@ -15,7 +15,6 @@ import {
   Login,
   Date1,
 } from "./styles";
-import { RxDashboard, RxCardStackPlus } from "react-icons/rx";
 
 import {
   FcHighPriority,
@@ -23,12 +22,13 @@ import {
   FcLowPriority,
 } from "react-icons/fc";
 
-import { LuFilterX } from "react-icons/lu";
 import Todo from "./Todo";
 import { useDispatch, useSelector } from "react-redux";
 import { add, edit, Delete } from "../../store/actions/todoActions";
 import { useNavigate } from "react-router";
 import Navbar from "./Navbar";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const getDate = () => {
   const months = [
@@ -153,7 +153,15 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
       const data = await response.json();
       if (response.ok) {
         dispatch(add(data));
+        toast.success("Todo has been successfully Added!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
       } else {
+        toast.error("Failed to add Todo, please try again!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
         setError((prev) => ({ ...prev, error: true, msg: data.message }));
       }
       setShowModal(false);
@@ -233,7 +241,15 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     if (response.ok) {
       //dispatch(edit(currentTodo));
       setTodosChanged(!todosChanged);
+      toast.success("Todo has been successfully updated!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } else {
+      toast.error("Failed to update Todo, please try again!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
       //setError((prev) => ({ ...prev, error: true, msg: data.message }));
     }
 
@@ -358,6 +374,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
 
   return (
     <DashboardWrapper sideBar={sideBar} theme={theme}>
+      <ToastContainer />
       <Navbar
         activeIcon={activeIcon}
         addItemHandler={addItemHandler}
