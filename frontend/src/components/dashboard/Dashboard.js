@@ -77,7 +77,12 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
         `https://todo-9wex.onrender.com/todo/${user.currentUser}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE",
+          },
         }
       );
 
@@ -155,7 +160,12 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     } else {
       const response = await fetch("https://todo-9wex.onrender.com/todo/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE",
+        },
         body: JSON.stringify({ ...currentTodo, owner: user.currentUser }),
       });
 
@@ -238,7 +248,12 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
       `https://todo-9wex.onrender.com/todo/${currentTodo[0].id}/edit`,
       {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE",
+        },
         body: JSON.stringify({
           title: title,
           description: description,

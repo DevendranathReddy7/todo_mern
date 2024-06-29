@@ -37,7 +37,12 @@ const Todo = ({
   const deleteHandler = async (id) => {
     const response = await fetch("https://todo-9wex.onrender.com/todo/delete", {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE",
+      },
       body: JSON.stringify({ id: id, owner: user.currentUser }),
     });
 
