@@ -1,10 +1,13 @@
 const express = require("express");
+const path = require("path");
 const bodyParser = require("body-parser");
 const authRouters = require("./routes/authenticationRoutes.js");
 const todoRouters = require("./routes/todoRoutes.js");
 const app = express();
 app.use(bodyParser.json());
 const mongoose = require("mongoose");
+
+app.use(express.static(path.join(__dirname, "frontend", "build")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -17,6 +20,10 @@ app.use((req, res, next) => {
 app.use("/", authRouters);
 
 app.use("/todo", todoRouters);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+});
 
 mongoose
   .connect(
