@@ -74,7 +74,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
   useEffect(() => {
     const getTodos = async () => {
       const response = await fetch(
-        `http://localhost:5000/todo/${user.currentUser}`,
+        `https://todo-9wex.onrender.com/todo/${user.currentUser}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -153,7 +153,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     ) {
       setError(true);
     } else {
-      const response = await fetch("http://localhost:5000/todo/add", {
+      const response = await fetch("https://todo-9wex.onrender.com/todo/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...currentTodo, owner: user.currentUser }),
@@ -235,7 +235,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     const priority = document.getElementById("priority").value;
 
     const response = await fetch(
-      `http://localhost:5000/todo/${currentTodo[0].id}/edit`,
+      `https://todo-9wex.onrender.com/todo/${currentTodo[0].id}/edit`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

@@ -48,7 +48,7 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const response = await fetch("http://localhost:5000/signup", {
+    const response = await fetch("https://todo-9wex.onrender.com/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
