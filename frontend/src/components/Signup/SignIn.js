@@ -14,17 +14,20 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { auth } from "../../store/actions/authActions";
 import { ToastContainer, toast } from "react-toastify";
+import Loading from "../dashboard/Loader/Loading";
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState({ error: false, msg: "" });
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
+      setLoading(true);
       const response = await fetch("https://todo-9wex.onrender.com/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -47,11 +50,15 @@ export default function SignIn() {
         });
         //setError((prev) => ({ ...prev, error: true, msg: res.message }));
       }
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
     <>
+      {loading && <Loading />}
       <ToastContainer />
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">

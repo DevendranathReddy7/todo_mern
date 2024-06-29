@@ -32,6 +32,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
+import Loading from "./Loader/Loading";
 
 const getDate = () => {
   const today = new Date();
@@ -61,6 +62,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
   const [currentStatus, setCurrentStatus] = useState("Todo");
   const [error, setError] = useState(false);
   const [todosChanged, setTodosChanged] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,6 +75,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
   //get Todos
   useEffect(() => {
     const getTodos = async () => {
+      setLoading(true);
       const response = await fetch(
         `https://todo-9wex.onrender.com/todo/${user.currentUser}`,
         {
@@ -92,6 +95,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     };
     if (user.currentUser !== "") {
       getTodos();
+      setLoading(false);
     }
   }, [user.currentUser, todosStore, todosChanged]);
 
@@ -158,6 +162,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     ) {
       setError(true);
     } else {
+      setLoading(true);
       const response = await fetch("https://todo-9wex.onrender.com/todo/add", {
         method: "POST",
         headers: {
@@ -187,6 +192,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
       setError(false);
       setActiveIcon("board view");
       setCurrentTodo(intialTodo);
+      setLoading(false);
     }
   };
 
@@ -243,7 +249,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
     const priority = document.getElementById("priority").value;
-
+    setLoading(true);
     const response = await fetch(
       `https://todo-9wex.onrender.com/todo/${currentTodo[0].id}/edit`,
       {
@@ -283,6 +289,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     setCurrentTodo(intialTodo);
     setShowModal(false);
     setIsEditing(false);
+    setLoading(false);
   };
 
   const displayModal = () => {
@@ -413,6 +420,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
   return (
     <DashboardWrapper sideBar={sideBar} theme={theme}>
       <ToastContainer />
+      {loading && <Loading />}
       <Navbar
         activeIcon={activeIcon}
         addItemHandler={addItemHandler}

@@ -16,6 +16,7 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { auth } from "../../store/actions/authActions";
 import { ToastContainer, toast } from "react-toastify";
+import Loading from "../dashboard/Loader/Loading";
 
 function Copyright(props) {
   return (
@@ -42,12 +43,13 @@ const defaultTheme = createTheme();
 export default function SignUp() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState({ error: false, msg: "" });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
+    setLoading(true);
     const response = await fetch("https://todo-9wex.onrender.com/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -71,10 +73,12 @@ export default function SignUp() {
       });
       //setError((prev) => ({ ...prev, status: true, msg: res.message }));
     }
+    setLoading(false);
   };
 
   return (
     <>
+      {loading && <Loading />}
       <ToastContainer />
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">

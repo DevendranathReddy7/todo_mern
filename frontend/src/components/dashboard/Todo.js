@@ -12,6 +12,7 @@ import {
   FcLowPriority,
 } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
+import Loading from "./Loader/Loading";
 //import { Delete, edit } from "../../store/actions/todoActions";
 
 const Todo = ({
@@ -26,6 +27,7 @@ const Todo = ({
   //const dispatch = useDispatch();
   //const todos = useSelector((store) => store.todo);
   const user = useSelector((store) => store.auth);
+  const [loading, setLoading] = useState(false);
 
   const editHandler = (id) => {
     const tempTodo = todos.filter((todo) => todo.id === id);
@@ -35,6 +37,7 @@ const Todo = ({
   };
 
   const deleteHandler = async (id) => {
+    setLoading(true);
     const response = await fetch("https://todo-9wex.onrender.com/todo/delete", {
       method: "DELETE",
       headers: {
@@ -61,6 +64,7 @@ const Todo = ({
       });
       //setError((prev) => ({ ...prev, error: true, msg: data.message }));
     }
+    setLoading(false);
   };
 
   const getDate = (date) => {
@@ -70,109 +74,63 @@ const Todo = ({
   };
 
   return (
-    <TodoWrapper>
-      {todos?.map(
-        (todo) =>
-          filter[todo?.status] && (
-            <TodoContainer theme={theme} key={todo._id}>
-              <Div1>
-                <div>
-                  <Title>
-                    {todo.title.length < 13
-                      ? todo.title
-                      : todo.title.slice(0, 12) + "..."}
-                  </Title>
-                  <p>
-                    {todo.description.length < 20
-                      ? todo.description
-                      : todo.description.slice(0, 19) + "..."}
-                  </p>
-                </div>
-
-                <div>
-                  <div
-                    style={{ paddingTop: "15px" }}
-                    onClick={() => editHandler(todo._id)}
-                  >
-                    <RiEditCircleLine size={23} />
+    <>
+      {loading && <Loading />}
+      <TodoWrapper>
+        {todos?.map(
+          (todo) =>
+            filter[todo?.status] && (
+              <TodoContainer theme={theme} key={todo._id}>
+                <Div1>
+                  <div>
+                    <Title>
+                      {todo.title.length < 13
+                        ? todo.title
+                        : todo.title.slice(0, 12) + "..."}
+                    </Title>
+                    <p>
+                      {todo.description.length < 20
+                        ? todo.description
+                        : todo.description.slice(0, 19) + "..."}
+                    </p>
                   </div>
-                  <div onClick={() => deleteHandler(todo._id)}>
-                    <TiDeleteOutline size={25} />
+
+                  <div>
+                    <div
+                      style={{ paddingTop: "15px" }}
+                      onClick={() => editHandler(todo._id)}
+                    >
+                      <RiEditCircleLine size={23} />
+                    </div>
+                    <div onClick={() => deleteHandler(todo._id)}>
+                      <TiDeleteOutline size={25} />
+                    </div>
                   </div>
-                </div>
-              </Div1>
-              <Div2>
-                <Date>
-                  <SlCalender />
-                  {getDate(todo.date)}
-                </Date>
+                </Div1>
+                <Div2>
+                  <Date>
+                    <SlCalender />
+                    {getDate(todo.date)}
+                  </Date>
 
-                <div>
-                  {todo.priority === "High" ? (
-                    <FcHighPriority />
-                  ) : todo.priority === "Medium" ? (
-                    <FcMediumPriority />
-                  ) : (
-                    <FcLowPriority />
-                  )}{" "}
-                  {todo.priority}
-                </div>
+                  <div>
+                    {todo.priority === "High" ? (
+                      <FcHighPriority />
+                    ) : todo.priority === "Medium" ? (
+                      <FcMediumPriority />
+                    ) : (
+                      <FcLowPriority />
+                    )}{" "}
+                    {todo.priority}
+                  </div>
 
-                <Date status={todo.status}>{todo.status}</Date>
-              </Div2>
-            </TodoContainer>
-          )
-      )}
-    </TodoWrapper>
+                  <Date status={todo.status}>{todo.status}</Date>
+                </Div2>
+              </TodoContainer>
+            )
+        )}
+      </TodoWrapper>
+    </>
   );
 };
 export default Todo;
-
-{
-  /* <TodoContainer theme={theme}>
-          <Div1>
-            <div>
-              <Title>
-                {todo.title.length < 13
-                  ? todo.title
-                  : todo.title.slice(0, 12) + "..."}
-              </Title>
-              <p>
-                {todo.description.length < 20
-                  ? todo.description
-                  : todo.description.slice(0, 19) + "..."}
-              </p>
-            </div>
-
-            <div>
-              <div
-                style={{ paddingTop: "15px" }}
-                onClick={() => editHandler(todo.id)}
-              >
-                <RiEditCircleLine size={23} />
-              </div>
-              <div onClick={() => deleteHandler(todo.id)}>
-                <TiDeleteOutline size={25} />
-              </div>
-            </div>
-          </Div1>
-          <Div2>
-            <Date>
-              <SlCalender /> {todo.date}
-            </Date>
-
-            <div>
-              {todo.priority === "High" ? (
-                <FcHighPriority />
-              ) : todo.priority === "Medium" ? (
-                <FcMediumPriority />
-              ) : (
-                <FcLowPriority />
-              )}{" "}
-              {todo.priority}
-            </div>
-
-            <Date status={todo.status}>{todo.status}</Date>
-          </Div2>
-        </TodoContainer> */
-}
