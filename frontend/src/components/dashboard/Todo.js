@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TodoWrapper, TodoContainer, Div1, Div2, Title, Date } from "./styles";
 import { TiDeleteOutline } from "react-icons/ti";
 import { RiEditCircleLine } from "react-icons/ri";
@@ -11,48 +11,27 @@ import {
   FcLowPriority,
 } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { Delete, edit } from "../../store/actions/todoActions";
+//import { Delete, edit } from "../../store/actions/todoActions";
 
-const Todo = ({ theme, filter }) => {
-  const dispatch = useDispatch();
-  const todos = useSelector((store) => store.todo);
+const Todo = ({
+  theme,
+  filter,
+  todosChanged,
+  todos,
+  editingStatus,
+  modalStatus,
+  currentTODO,
+}) => {
+  //const dispatch = useDispatch();
+  //const todos = useSelector((store) => store.todo);
   const user = useSelector((store) => store.auth);
-  console.log(todos);
-  // const editTodoHandler = async () => {
-  //   const title = document.getElementById("title").value;
-  //   const description = document.getElementById("description").value;
-  //   const priority = document.getElementById("priority").value;
 
-  //   const response = await fetch("http://localhost:5000/todo/edit", {
-  //     method: "PATCH",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       title: title,
-  //       description: description,
-  //       priority: priority,
-  //       status: currentStatus,
-  //       owner: user.currentUser,
-  //     }),
-  //   });
-
-  //   const data = await response.json();
-  //   if (response.ok) {
-  //     dispatch(edit(currentTodo));
-  //   } else {
-  //     setError((prev) => ({ ...prev, error: true, msg: data.message }));
-  //   }
-
-  //   setCurrentTodo(intialTodo);
-  //   setShowModal(false);
-  //   setIsEditing(false);
-  // };
-
-  // const editHandler = (id) => {
-  //   const tempTodo = todos.filter((todo) => todo.id === id);
-  //   setCurrentTodo(tempTodo);
-  //   setIsEditing(true);
-  //   setShowModal(true);
-  // };
+  const editHandler = (id) => {
+    const tempTodo = todos.filter((todo) => todo.id === id);
+    currentTODO(tempTodo);
+    modalStatus(true);
+    editingStatus(true);
+  };
 
   const deleteHandler = async (id) => {
     const response = await fetch("http://localhost:5000/todo/delete", {
@@ -63,7 +42,8 @@ const Todo = ({ theme, filter }) => {
 
     const data = await response.json();
     if (response.ok) {
-      dispatch(Delete(id));
+      todosChanged();
+      //dispatch(Delete(id));
     } else {
       //setError((prev) => ({ ...prev, error: true, msg: data.message }));
     }
@@ -74,6 +54,7 @@ const Todo = ({ theme, filter }) => {
     let [year, month, day] = dateStr.split("-");
     return `${day}-${month}-${year}`;
   };
+
   return (
     <TodoWrapper>
       {todos?.map(
@@ -97,7 +78,7 @@ const Todo = ({ theme, filter }) => {
                 <div>
                   <div
                     style={{ paddingTop: "15px" }}
-                    // onClick={() => editHandler(todo._id)}
+                    onClick={() => editHandler(todo._id)}
                   >
                     <RiEditCircleLine size={23} />
                   </div>

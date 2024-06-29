@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 function App() {
   const [sideBar, setSideBar] = useState(true);
   const [theme, setTheme] = useState("light");
+  const [todos, setTodos] = useState([]);
 
   const sidebarHandle = (value) => {
     setSideBar(value);
@@ -31,8 +32,16 @@ function App() {
               className="App"
               style={{ display: "flex", flexDirection: "row" }}
             >
-              <Sidebar SidebarStatus={sidebarHandle} mode={themeHandler} />
-              <Dashboard sideBar={sideBar} theme={theme} />
+              <Sidebar
+                SidebarStatus={sidebarHandle}
+                mode={themeHandler}
+                todos={todos}
+              />
+              <Dashboard
+                sideBar={sideBar}
+                theme={theme}
+                onTodoUpdate={setTodos}
+              />
             </div>
           }
         />

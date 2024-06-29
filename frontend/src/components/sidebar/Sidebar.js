@@ -14,8 +14,8 @@ import { LuArrowDownRightSquare } from "react-icons/lu";
 
 import { useSelector } from "react-redux";
 
-const Sidebar = ({ SidebarStatus, mode }) => {
-  const todos = useSelector((store) => store.todo);
+const Sidebar = ({ SidebarStatus, mode, todos }) => {
+  //const todos = useSelector((store) => store.todo);
 
   const [theme, setTheme] = useState("light");
   const [showSideBar, setShowSideBar] = useState(true);

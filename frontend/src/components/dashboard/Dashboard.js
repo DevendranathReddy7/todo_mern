@@ -59,7 +59,7 @@ const intialTodo = {
   status: "Todo",
   date: getDate(),
 };
-const Dashboard = ({ sideBar, theme }) => {
+const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
   const user = useSelector((store) => store.auth);
   const todosStore = useSelector((store) => store.todo);
   const [showModal, setShowModal] = useState(false);
@@ -72,6 +72,7 @@ const Dashboard = ({ sideBar, theme }) => {
   const [changeStatus, setChangeStatus] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("Todo");
   const [error, setError] = useState(false);
+  const [todosChanged, setTodosChanged] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -94,10 +95,14 @@ const Dashboard = ({ sideBar, theme }) => {
 
       const data = await response.json();
       setTodos(data.todos);
+      onTodoUpdate(data.todos);
     };
     getTodos();
-  }, [user.currentUser, todosStore]);
+  }, [user.currentUser, todosStore, todosChanged]);
 
+  const getTodoagainHandler = () => {
+    setTodosChanged(!todosChanged);
+  };
   const addItemHandler = () => {
     setActiveIcon("add item");
     setIsFilterClicked(false);
@@ -146,7 +151,6 @@ const Dashboard = ({ sideBar, theme }) => {
       });
 
       const data = await response.json();
-      console.log(data);
       if (response.ok) {
         dispatch(add(data));
       } else {
@@ -208,6 +212,36 @@ const Dashboard = ({ sideBar, theme }) => {
     );
   };
 
+  const editTodoHandler = async () => {
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+    const priority = document.getElementById("priority").value;
+
+    const response = await fetch("http://localhost:5000/todo/edit", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        priority: priority,
+        status: currentStatus,
+        owner: user.currentUser,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      //dispatch(edit(currentTodo));
+      setTodosChanged(!todosChanged);
+    } else {
+      //setError((prev) => ({ ...prev, error: true, msg: data.message }));
+    }
+
+    setCurrentTodo(intialTodo);
+    setShowModal(false);
+    setIsEditing(false);
+  };
+
   const displayModal = () => {
     return (
       <Overlay>
@@ -248,7 +282,7 @@ const Dashboard = ({ sideBar, theme }) => {
           )}
           <div>
             {isEditing ? (
-              <Button onClick={"editTodoHandler"} add>
+              <Button onClick={editTodoHandler} add>
                 Save
               </Button>
             ) : (
@@ -333,9 +367,11 @@ const Dashboard = ({ sideBar, theme }) => {
       <Todo
         todos={todos}
         theme={theme}
-        // deleteTodo={deleteHandler}
-        // editTodo={editHandler}
         filter={filter}
+        todosChanged={getTodoagainHandler}
+        modalStatus={setShowModal}
+        editingStatus={setIsEditing}
+        currentTODO={setCurrentTodo}
       />
       {changeStatus && displayStatus()}
       {showModal && displayModal()}
