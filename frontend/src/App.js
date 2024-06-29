@@ -5,7 +5,12 @@ import Sidebar from "./components/sidebar/Sidebar";
 import SignIn from "./components/Signup/SignIn";
 import SignUp from "./components/Signup/Signup";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 // import { ToastContainer, toast } from "react-toastify";
 
 function App() {
@@ -52,6 +57,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route
@@ -71,6 +77,22 @@ function App() {
                 theme={theme}
                 onTodoUpdate={setTodos}
               />
+            </div>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <div style={{ textAlign: "center", marginTop: "50px" }}>
+              <h1>Oops!</h1>
+              <p>
+                Sorry, but the page you are looking for seems to have taken a
+                coffee break 🍵.
+              </p>
+              <p>
+                Meanwhile, you can enjoy exploring our awesome{" "}
+                <a href="/home">homepage</a>!
+              </p>
             </div>
           }
         />

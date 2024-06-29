@@ -1,12 +1,15 @@
 const mongoose = require("mongoose");
+const { format } = require("date-fns");
+const { enUS } = require("date-fns/locale");
+
 const Schema = mongoose.Schema;
+
 const getDate = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  return `${day}-${month}-${year}`;
+  const today = new Date();
+  const formattedDate = format(today, "dd-MMM-yyyy", { locale: enUS });
+  return formattedDate;
 };
+
 const TodoSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },

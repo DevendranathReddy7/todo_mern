@@ -9,20 +9,24 @@ const getTodos = async (req, res, next) => {
   try {
     validUser = await UserSchema.findOne({ _id: owner });
   } catch (err) {
-    const error = new HttpError("Something went wrong", 500);
-    return next(error);
+    // const error = new HttpError("Something went wrong", 500);
+    // return next(error);
+    return res.status(500).json({ message: "Something went wrong!" });
   }
 
   try {
     if (validUser) {
       todos = await TodoSchema.find({ owner: owner });
     } else {
-      res.status(401).json("You're not authorised to perform this action");
+      return res
+        .status(401)
+        .json({ message: "You're not authorised to perform this action" });
     }
   } catch (err) {
-    console.log(err);
-    const error = new HttpError("Something went wrong get", 500);
-    return next(error);
+    // const error = new HttpError("Something went wrong get", 500);
+    // return next(error);
+
+    return res.status(500).json({ message: "Something went wrong!" });
   }
   res.json({
     todos: todos.map((todo) => todo.toObject({ getters: true })),
@@ -35,8 +39,10 @@ const addTodo = async (req, res, next) => {
   try {
     validUser = await UserSchema.findOne({ _id: owner });
   } catch (err) {
-    const error = new HttpError("Something went wrong", 500);
-    return next(error);
+    // const error = new HttpError("Something went wrong", 500);
+    // return next(error);
+
+    return res.status(500).json({ message: "Something went wrong!" });
   }
 
   try {
@@ -56,7 +62,9 @@ const addTodo = async (req, res, next) => {
       });
       res.status(201).json(todo);
     } else {
-      res.status(401).json("You're not authorised to perform this action");
+      return res
+        .status(401)
+        .json({ message: "You're not authorised to perform this action" });
     }
   } catch (error) {
     res.send(error);
@@ -74,8 +82,9 @@ const editTodo = async (req, res, next) => {
     validUser = await UserSchema.findOne({ _id: owner });
     editingTodo = await TodoSchema.findOne({ _id: todoId });
   } catch (err) {
-    const error = new HttpError("Something went wrong", 500);
-    return next(error);
+    // const error = new HttpError("Something went wrong", 500);
+    // return next(error);
+    return res.status(500).json({ message: "Something went wrong!" });
   }
 
   try {
@@ -95,18 +104,20 @@ const editTodo = async (req, res, next) => {
         );
 
         if (updatedTodo) {
-          res.status(200).json("Updated the todo");
+          res.status(200).json({ message: "Updated the todo" });
         } else {
-          res.status(400).json("Error while updating your todo");
+          res.status(400).json({ message: "Error while updating your todo" });
         }
       } else {
-        res.status(400).json("Error: Todo not found");
+        res.status(400).json({ message: "Error: Todo not found" });
       }
     } else {
-      res.status(401).json("You're not authorised to perform this action");
+      res
+        .status(401)
+        .json({ message: "You're not authorised to perform this action" });
     }
   } catch (err) {
-    res.send(error);
+    res.send({ message: err });
   }
 };
 
@@ -119,8 +130,9 @@ const deleteTodo = async (req, res, next) => {
     validUser = await UserSchema.findOne({ _id: owner });
     editingTodo = await TodoSchema.findOne({ owner: owner });
   } catch (err) {
-    const error = new HttpError("Something went wrong", 500);
-    return next(error);
+    // const error = new HttpError("Something went wrong", 500);
+    // return next(error);
+    return res.status(500).json({ message: "Something went wrong!" });
   }
 
   try {
@@ -136,15 +148,17 @@ const deleteTodo = async (req, res, next) => {
             },
             { new: true }
           );
-          res.status(200).json("Successfully deleted todo");
+          res.status(200).json({ message: "Successfully deleted todo" });
         } else {
-          res.status(400).json("Error while deleting your todo");
+          res.status(400).json({ message: "Error while deleting your todo" });
         }
       } else {
-        res.status(400).json("Error: Todo not found");
+        res.status(400).json({ message: "Error: Todo not found" });
       }
     } else {
-      res.status(401).json("You're not authorised to perform this action");
+      res
+        .status(401)
+        .json({ message: "You're not authorised to perform this action" });
     }
   } catch (err) {
     res.send(err);

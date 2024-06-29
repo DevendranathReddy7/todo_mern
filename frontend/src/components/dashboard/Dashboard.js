@@ -30,28 +30,15 @@ import { useNavigate } from "react-router";
 import Navbar from "./Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
 
 const getDate = () => {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  return `${day}-${months[month]}-${year}`;
+  const today = new Date();
+  const formattedDate = format(today, "dd-MMM-yyyy", { locale: enUS });
+  return formattedDate;
 };
+
 const intialTodo = {
   id: "",
   title: "",
