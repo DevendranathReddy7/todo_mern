@@ -10,7 +10,7 @@ import {
   Div,
 } from "./styles";
 import { CiLight, CiDark } from "react-icons/ci";
-import { LuArrowDownRightSquare } from "react-icons/lu";
+import { LuArrowDownRightSquare, LuArrowUpLeftSquare } from "react-icons/lu";
 
 import { useSelector } from "react-redux";
 
@@ -34,11 +34,13 @@ const Sidebar = ({ SidebarStatus, mode, todos }) => {
 
   return (
     <>
-      {showSideBar ? (
+      {showSideBar && (
         <SidebarWrapper active={theme === "light"}>
           <HeaderWrapper>
             <h4>Tasks</h4>
-            <h3 onClick={() => setShowSideBar(false)}>&times;</h3>
+            <h3 onClick={() => setShowSideBar(false)}>
+              <LuArrowUpLeftSquare />
+            </h3>
           </HeaderWrapper>
           <TaskItemsWrapper active={theme === "light"}>
             <Ul>
@@ -63,7 +65,9 @@ const Sidebar = ({ SidebarStatus, mode, todos }) => {
             </ButtonWrapper>
           </ThemeWrapper>
         </SidebarWrapper>
-      ) : (
+      )}
+
+      {!showSideBar && (
         <Div active={theme === "light"}>
           <LuArrowDownRightSquare
             size={30}

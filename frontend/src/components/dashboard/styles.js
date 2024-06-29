@@ -70,6 +70,16 @@ export const Input = styled.input`
   }
 `;
 
+export const Select = styled.select`
+  width: 25.5rem;
+  height: 35px;
+  margin: 5px;
+
+  @media (max-width: 460px) {
+    width: 15.5rem;
+  }
+`;
+
 export const Label = styled.label`
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   padding-left: 4px;
@@ -173,6 +183,10 @@ export const Date = styled.div`
   background-color: lightgrey;
   border-radius: 30px;
   width: 7rem;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   ${(props) =>
     props.status &&
     `

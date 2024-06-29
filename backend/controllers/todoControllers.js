@@ -66,11 +66,13 @@ const addTodo = async (req, res, next) => {
 const editTodo = async (req, res, next) => {
   const { title, description, priority, status, date, owner } = req.body;
 
+  const todoId = req.params.todoId;
+
   let validUser = "";
   let editingTodo = "";
   try {
     validUser = await UserSchema.findOne({ _id: owner });
-    editingTodo = await TodoSchema.findOne({ owner: owner });
+    editingTodo = await TodoSchema.findOne({ _id: todoId });
   } catch (err) {
     const error = new HttpError("Something went wrong", 500);
     return next(error);

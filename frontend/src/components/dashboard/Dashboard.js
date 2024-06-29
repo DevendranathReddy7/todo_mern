@@ -14,6 +14,7 @@ import {
   CheckboxDiv,
   Login,
   Date1,
+  Select,
 } from "./styles";
 
 import {
@@ -97,7 +98,9 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
       setTodos(data.todos);
       onTodoUpdate(data.todos);
     };
-    getTodos();
+    if (user.currentUser !== "") {
+      getTodos();
+    }
   }, [user.currentUser, todosStore, todosChanged]);
 
   const getTodoagainHandler = () => {
@@ -137,6 +140,25 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
   };
 
   const addHandler = async () => {
+    if (user.currentUser === "") {
+      let msg = (
+        <p>
+          Access denied. Please{" "}
+          <a href="/signin" target="_blank">
+            sign-in
+          </a>{" "}
+          or{" "}
+          <a href="/signup" target="_blank">
+            sign-up
+          </a>{" "}
+          to proceed.
+        </p>
+      );
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    }
     if (
       currentTodo.title === "" ||
       currentTodo.description === "" ||
@@ -225,17 +247,20 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     const description = document.getElementById("description").value;
     const priority = document.getElementById("priority").value;
 
-    const response = await fetch("http://localhost:5000/todo/edit", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: title,
-        description: description,
-        priority: priority,
-        status: currentStatus,
-        owner: user.currentUser,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:5000/todo/${currentTodo[0].id}/edit`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title,
+          description: description,
+          priority: priority,
+          status: currentStatus,
+          owner: user.currentUser,
+        }),
+      }
+    );
 
     const data = await response.json();
     if (response.ok) {
@@ -327,10 +352,21 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     setCurrentStatus(value);
   };
 
+  const handleChange = (event) => {
+    updateStatus(event.target.value);
+  };
+
   const displayStatus = () => {
     return (
       <>
-        <Date1 status={"Todo"} onClick={() => updateStatus("Todo")}>
+        <Label>Status</Label>
+        <Select onChange={handleChange}>
+          <option value="Todo">Todo</option>
+          <option value="Progress">Progress</option>
+          <option value="Completed">Completed</option>
+        </Select>
+
+        {/* <Date1 status={"Todo"} onClick={() => updateStatus("Todo")}>
           Todo
         </Date1>
 
@@ -340,7 +376,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
 
         <Date1 status="Completed" onClick={() => updateStatus("Completed")}>
           Completed
-        </Date1>
+        </Date1> */}
       </>
     );
   };

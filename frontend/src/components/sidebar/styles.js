@@ -7,7 +7,7 @@ export const SidebarWrapper = styled.div`
   width: 25rem;
   background-color: ${(props) => (props.active ? "white" : "black")};
   color: ${(props) => (!props.active ? "white" : "black")};
-  @media (max-width: 768px) {
+  @media (max-width: 594px) {
     display: none;
   }
 `;
@@ -67,4 +67,7 @@ export const ButtonWrapper = styled.button`
 export const Div = styled.div`
   background-color: ${(props) => (props.active ? "white" : "black")};
   color: ${(props) => (!props.active ? "white" : "black")};
+  @media (max-width: 594px) {
+    display: block;
+  }
 `;

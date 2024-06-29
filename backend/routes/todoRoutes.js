@@ -4,7 +4,7 @@ const todoControler = require("../controllers/todoControllers");
 
 router.get("/:uId", todoControler.getTodos);
 router.post("/add", todoControler.addTodo);
-router.patch("/edit", todoControler.editTodo);
+router.patch("/:todoId/edit", todoControler.editTodo);
 router.delete("/delete", todoControler.deleteTodo);
 
 module.exports = router;
