@@ -1,8 +1,15 @@
 const UserSchema = require("../modals/userModal");
-const HttpError = require("../modals/http-error");
+// const HttpError = require("../modals/http-error");
 
 const signin = async (req, res, next) => {
   const { email, password } = req.body;
+
+  if (email === "") {
+    return res.status(400).json({ message: "Please enter an Email" });
+  } else if (password === "") {
+    return res.status(400).json({ message: "Please enter your Password" });
+  }
+
   let existingUser = "";
 
   try {
@@ -46,6 +53,16 @@ const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
   let existingUser = "";
 
+  if (name === "") {
+    return res.status(400).json({ message: "Please enter a Valid Name" });
+  } else if (email === "") {
+    return res.status(400).json({ message: "Please enter a Valid Email" });
+  } else if (password === "" || password.length < 6) {
+    return res.status(400).json({
+      message: "Please choose strong Password with atleast 6 character length",
+    });
+  }
+
   try {
     existingUser = await UserSchema.findOne({ email: email });
   } catch (err) {
@@ -62,12 +79,10 @@ const signup = async (req, res, next) => {
     // );
     // return next(error);
 
-    return res
-      .status(400)
-      .json({
-        message:
-          "Email already registered..please user different email or try login instead.",
-      });
+    return res.status(400).json({
+      message:
+        "Email already registered..please user different email or try login instead.",
+    });
   }
   const newUser = new UserSchema({
     name,
