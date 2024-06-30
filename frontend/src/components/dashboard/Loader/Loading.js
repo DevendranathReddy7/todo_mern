@@ -1,11 +1,15 @@
 import React from "react";
 import "./Loading.css";
 
-const Loading = () => {
+const Loading = ({ message }) => {
   return (
     <div className="loading">
-      <div className="spinner"></div>
-      <p>Loading...</p>
+      <div className="dots">
+        <div className="dot red"></div>
+        <div className="dot blue"></div>
+        <div className="dot yellow"></div>
+      </div>
+      <h3>Hold on, we're {message}...</h3>
     </div>
   );
 };

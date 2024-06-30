@@ -75,7 +75,7 @@ const Todo = ({
 
   return (
     <>
-      {loading && <Loading />}
+      {loading && <Loading message="Deleting your todo" />}
       <TodoWrapper>
         {todos?.map(
           (todo) =>

@@ -23,8 +23,38 @@ export default function SignIn() {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState({ error: false, msg: "" });
+  const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+
+  React.useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Cleanup event listeners on component unmount
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (isOnline) {
+      toast.success("You are back online!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } else {
+      return toast.error(
+        "You are offline. Please check your internet connection.",
+        {
+          position: "top-right",
+          autoClose: 5000, // Keep the toast visible until user reconnects
+        }
+      );
+    }
     const data = new FormData(event.currentTarget);
     try {
       setLoading(true);
@@ -58,8 +88,8 @@ export default function SignIn() {
 
   return (
     <>
-      {loading && <Loading />}
-      <ToastContainer />
+      {loading && <Loading message="verifying your Authorization" />}
+
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />

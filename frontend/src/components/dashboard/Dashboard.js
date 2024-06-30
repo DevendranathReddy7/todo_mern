@@ -28,7 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { add, edit, Delete } from "../../store/actions/todoActions";
 import { useNavigate } from "react-router";
 import Navbar from "./Navbar";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -162,6 +162,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     ) {
       setError(true);
     } else {
+      setShowModal(false);
       setLoading(true);
       const response = await fetch("https://todo-9wex.onrender.com/todo/add", {
         method: "POST",
@@ -249,49 +250,57 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
     const priority = document.getElementById("priority").value;
-    setLoading(true);
-    const response = await fetch(
-      `https://todo-9wex.onrender.com/todo/${currentTodo[0].id}/edit`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE",
-        },
-        body: JSON.stringify({
-          title: title,
-          description: description,
-          priority: priority,
-          status: currentStatus,
-          owner: user.currentUser,
-        }),
-      }
-    );
-
-    const data = await response.json();
-    if (response.ok) {
-      //dispatch(edit(currentTodo));
-      setTodosChanged(!todosChanged);
-      toast.success("Todo has been successfully updated!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+    if (
+      currentTodo.title === "" ||
+      currentTodo.description === "" ||
+      currentTodo.priority === ""
+    ) {
+      setError(true);
     } else {
-      toast.error("Failed to update Todo, please try again!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      //setError((prev) => ({ ...prev, error: true, msg: data.message }));
+      setShowModal(false);
+      setLoading(true);
+      const response = await fetch(
+        `https://todo-9wex.onrender.com/todo/${currentTodo[0].id}/edit`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE",
+          },
+          body: JSON.stringify({
+            title: title,
+            description: description,
+            priority: priority,
+            status: currentStatus,
+            owner: user.currentUser,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        //dispatch(edit(currentTodo));
+        setTodosChanged(!todosChanged);
+        toast.success("Todo has been successfully updated!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        toast.error("Failed to update Todo, please try again!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        //setError((prev) => ({ ...prev, error: true, msg: data.message }));
+      }
+
+      setCurrentTodo(intialTodo);
+      setShowModal(false);
+      setIsEditing(false);
+      setLoading(false);
     }
-
-    setCurrentTodo(intialTodo);
-    setShowModal(false);
-    setIsEditing(false);
-    setLoading(false);
   };
-
   const displayModal = () => {
     return (
       <Overlay>
@@ -369,7 +378,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     return (
       <>
         <Label>Status</Label>
-        <Select onChange={handleChange}>
+        <Select onChange={handleChange} value={currentStatus}>
           <option value="Todo">Todo</option>
           <option value="Progress">Progress</option>
           <option value="Completed">Completed</option>
@@ -419,8 +428,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
 
   return (
     <DashboardWrapper sideBar={sideBar} theme={theme}>
-      <ToastContainer />
-      {loading && <Loading />}
+      {loading && <Loading message="processing your request.." />}
       <Navbar
         activeIcon={activeIcon}
         addItemHandler={addItemHandler}

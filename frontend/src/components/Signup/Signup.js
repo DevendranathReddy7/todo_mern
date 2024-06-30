@@ -15,7 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { auth } from "../../store/actions/authActions";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Loading from "../dashboard/Loader/Loading";
 
 function Copyright(props) {
@@ -45,9 +45,38 @@ export default function SignUp() {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState({ error: false, msg: "" });
+  const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+
+  React.useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Cleanup event listeners on component unmount
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (isOnline) {
+      toast.success("You are back online!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } else {
+      return toast.error(
+        "You are offline. Please check your internet connection.",
+        {
+          position: "top-right",
+          autoClose: 5000, // Keep the toast visible until user reconnects
+        }
+      );
+    }
     const data = new FormData(event.currentTarget);
     setLoading(true);
     const response = await fetch("https://todo-9wex.onrender.com/signup", {
@@ -78,8 +107,7 @@ export default function SignUp() {
 
   return (
     <>
-      {loading && <Loading />}
-      <ToastContainer />
+      {loading && <Loading message="verifying entered details" />}
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
