@@ -1,16 +1,21 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Div, Login, P, Span } from "./styles";
 import { RxCardStackPlus, RxDashboard } from "react-icons/rx";
 import { LuFilterX } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import { auth } from "../../store/actions/authActions";
 
 const Navbar = ({ activeIcon, addItemHandler, filterHandler }) => {
   const user = useSelector((store) => store.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    // const storedUser = localStorage.getItem("user");
+    // dispatch(auth(JSON.parse(storedUser)));
+
     if (user.currentUser === "") {
       let msg = (
         <p>

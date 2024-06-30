@@ -33,6 +33,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import Loading from "./Loader/Loading";
+import { auth } from "../../store/actions/authActions";
 
 const getDate = () => {
   const today = new Date();
@@ -49,7 +50,7 @@ const intialTodo = {
   date: getDate(),
 };
 const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
-  const user = useSelector((store) => store.auth);
+  let user = useSelector((store) => store.auth);
   const todosStore = useSelector((store) => store.todo);
   const [showModal, setShowModal] = useState(false);
   const [showPriority, setShowPriority] = useState(false);
@@ -71,6 +72,12 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
     Progress: true,
     Completed: true,
   });
+
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   console.log(user, JSON.parse(storedUser));
+  //   dispatch(auth(JSON.parse(storedUser)));
+  // }, []);
 
   //get Todos
   useEffect(() => {

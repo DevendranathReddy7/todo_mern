@@ -44,10 +44,10 @@ const Sidebar = ({ SidebarStatus, mode, todos }) => {
           </HeaderWrapper>
           <TaskItemsWrapper active={theme === "light"}>
             <Ul>
-              <Li>All Tasks ({todos.length || 0})</Li>
-              <Li>To do ({inTodo.length || 0})</Li>
-              <Li>In Progress ({inProgress.length || 0})</Li>
-              <Li>Completed ({completed.length || 0})</Li>
+              <Li>All Tasks ({todos?.length || 0})</Li>
+              <Li>To do ({inTodo?.length || 0})</Li>
+              <Li>In Progress ({inProgress?.length || 0})</Li>
+              <Li>Completed ({completed?.length || 0})</Li>
             </Ul>
           </TaskItemsWrapper>
           <ThemeWrapper>

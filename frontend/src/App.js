@@ -17,6 +17,36 @@ function App() {
   const [sideBar, setSideBar] = useState(true);
   const [theme, setTheme] = useState("light");
   const [todos, setTodos] = useState([]);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Cleanup event listeners on component unmount
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  if (isOnline) {
+    // toast.success("You are back online!", {
+    //   position: "top-right",
+    //   autoClose: 3000,
+    // });
+  } else {
+    return toast.error(
+      "You are offline. Please check your internet connection.",
+      {
+        position: "top-right",
+        autoClose: 5000, // Keep the toast visible until user reconnects
+      }
+    );
+  }
 
   const sidebarHandle = (value) => {
     setSideBar(value);

@@ -64,10 +64,10 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isOnline) {
-      toast.success("You are back online!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      // toast.success("You are back online!", {
+      //   position: "top-right",
+      //   autoClose: 3000,
+      // });
     } else {
       return toast.error(
         "You are offline. Please check your internet connection.",
