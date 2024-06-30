@@ -157,6 +157,7 @@ const Dashboard = ({ sideBar, theme, onTodoUpdate }) => {
           to proceed.
         </p>
       );
+      setShowModal(false);
       return toast.error(msg, {
         position: "top-right",
         autoClose: 5000,
